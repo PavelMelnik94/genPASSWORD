@@ -49,6 +49,10 @@ input {
         <!-- <h4>опционально. впишите фразу что бы усилить пароль от ссылки+слова.</h4> -->
         <input type="text" id="phrase" size="50" placeholder="Напишите фразу, чтобы сделать пароль ещё сильнее">
         <br>
+        <input id="slice" type="checkbox"> Добавить разделители и обрезать до 9 символов.
+        <br>
+        <input id="spec" type="checkbox"> Добавить три спецсимвола.
+        <br>
         <button style="font-size: 100%; padding:5px 10px 10px 10px" onclick="generate()">Создать пароль</button>
 
         <p>Ваш пароль:</p> <div id="pass" style="font-weight: bold"></div>
@@ -59,19 +63,48 @@ input {
 
   <script>
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+}
+
 let site, salt, phrase;
 let text, password;
+
+let speacialSymbols = [ '$', '%', '&', "*", '№'];
+function getThreeSymbol() {
+  let strSymbol =
+   speacialSymbols[`${getRandomInt(1, 5)}`] + speacialSymbols[`${getRandomInt(1, 5)}`] + speacialSymbols[`${getRandomInt(1, 5)}`];
+   return strSymbol;
+}
+
 
 function generate() {
   site = document.getElementById('website'),
   salt = document.getElementById('text'),
-  phrase = document.getElementById('phrase');
+  phrase = document.getElementById('phrase'),
+  slicePass = document.getElementById('slice');
+  symbol = document.getElementById('spec');
 
   text = text + salt + phrase;
 
+
+
   password = md5(text);
 
+  if (slicePass.checked) {
+  let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
+  document.getElementById('pass').innerHTML = str;
+  // console.log(arr);
+} else if (symbol.checked ) { 
+  let str = password.match(/.{1,3}/g).join('-').slice(0, 8);
+  document.getElementById('pass').innerHTML = str + getThreeSymbol();
+} else {
   document.getElementById('pass').innerHTML = password;
+}
+
+
 }
   </script>
 
