@@ -53,6 +53,7 @@ input {
         <br>
         <input id="spec" type="checkbox"> Добавить три спецсимвола.
         <br>
+        
         <button style="font-size: 100%; padding:5px 10px 10px 10px" onclick="generate()">Создать пароль</button>
 
         <p>Ваш пароль:</p> <div id="pass" style="font-weight: bold"></div>
@@ -69,42 +70,67 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
 }
 
-let site, salt, phrase;
+
+let site, salt, phrases;
 let text, password;
 
 let speacialSymbols = [ '$', '%', '&', "*", '№'];
 function getThreeSymbol() {
   let strSymbol =
-   speacialSymbols[`${getRandomInt(1, 5)}`] + speacialSymbols[`${getRandomInt(1, 5)}`] + speacialSymbols[`${getRandomInt(1, 5)}`];
+   speacialSymbols[`${getRandomInt(1, 5)}`] +
+   speacialSymbols[`${getRandomInt(1, 5)}`] +
+   speacialSymbols[`${getRandomInt(1, 5)}`];
    return strSymbol;
 }
 
 
 function generate() {
-  site = document.getElementById('website'),
-  salt = document.getElementById('text'),
-  phrase = document.getElementById('phrase'),
-  slicePass = document.getElementById('slice');
-  symbol = document.getElementById('spec');
+  site = document.getElementById('website').value;
+  salt = document.getElementById('word').value;
+  phrases = document.getElementById('phrase').value;
 
-  text = text + salt + phrase;
 
+ 
+
+  
+  text = site + salt + phrases;
 
 
   password = md5(text);
 
-  if (slicePass.checked) {
-  let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
-  document.getElementById('pass').innerHTML = str;
-  // console.log(arr);
-} else {
-  document.getElementById('pass').innerHTML = password;
-}
+
+  let slicePass = document.getElementById('slice'),
+        symbol = document.getElementById('spec');
+
+//   if (slicePass.checked) {
+//     let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
+//     document.getElementById('pass').innerHTML = str;
+// } else {
+//   console.log('err');
+//   document.getElementById('pass').innerHTML = password;
+// }
 
 if (symbol.checked ) { 
   let str = password.match(/.{1,3}/g).join('-').slice(0, 8);
   document.getElementById('pass').innerHTML = str + getThreeSymbol();
+} else if (slicePass.checked ) {
+  let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
+  document.getElementById('pass').innerHTML = str;
 }
+ else {
+  console.log('error');
+  document.getElementById('pass').innerHTML = password;
+}
+
+// if (slicePass.checked ) { 
+//   let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
+//   document.getElementById('pass').innerHTML = str;
+// } else {
+//   console.log('error');
+//   document.getElementById('pass').innerHTML = password;
+// }
+
+
 }
   </script>
 
