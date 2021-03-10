@@ -14,7 +14,21 @@
 
 
   <style type="text/css">
-body { text-align: center; margin: 10; font-family: Verdana, Arial, sans-serif; font-size: 16px; } /* настраиваем внешний вид полей ввода*/ input { display: inline-block; margin: 20px auto; border: 2px solid #eee; padding: 10px 20px; font-family: Verdana, Arial, sans-serif; font-size: 14px; }
+body {
+  text-align: center;
+  margin: 10;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 16px;
+}
+
+input {
+  display: inline-block;
+  margin: 10px auto;
+  border: 2px solid #032149;
+  padding: 10px 20px;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 14px;
+}
 
   </style>
 
@@ -24,11 +38,16 @@ body { text-align: center; margin: 10; font-family: Verdana, Arial, sans-serif; 
 <body>
    <div class="container" style="margin: auto">
         <h2 class="title">Генератор паролей через хеш-таблицу</h2>
-
+        <br>
+        <h4>Вставте в поле ссылку, и генератор зашифрует её через алгоритм хеширования.</h4>
         <input id="website" type="text" placeholder="Вставьте адрес сайта, где вам нужен пароль" size="50">
         <br>
+        <!-- <h4>опционально. впишите уникальное слово ассоциирующееся с чем-то, кем-то или сайтом для которого нужен пароль.</h4> -->
         <input type="text" id="word" size="50" placeholder="Напишите кодовое слово, чтобы сделать пароль сильнее">
+
         <br>
+        <!-- <h4>опционально. впишите фразу что бы усилить пароль от ссылки+слова.</h4> -->
+        <input type="text" id="phrase" size="50" placeholder="Напишите фразу, чтобы сделать пароль ещё сильнее">
         <br>
         <button style="font-size: 100%; padding:5px 10px 10px 10px" onclick="generate()">Создать пароль</button>
 
@@ -40,14 +59,15 @@ body { text-align: center; margin: 10; font-family: Verdana, Arial, sans-serif; 
 
   <script>
 
-let site, salt;
+let site, salt, phrase;
 let text, password;
 
 function generate() {
   site = document.getElementById('website'),
-  salt = document.getElementById('text');
+  salt = document.getElementById('text'),
+  phrase = document.getElementById('phrase');
 
-  text = text + salt + 'Gek';
+  text = text + salt + phrase;
 
   password = md5(text);
 
