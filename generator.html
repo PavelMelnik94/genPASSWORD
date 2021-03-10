@@ -14,127 +14,187 @@
 
 
   <style type="text/css">
-body {
-  text-align: center;
-  margin: 10;
-  font-family: Verdana, Arial, sans-serif;
-  font-size: 16px;
-}
+    body {
+      text-align: center;
+      margin: 10;
+      font-family: Verdana, Arial, sans-serif;
+      font-size: 16px;
+    }
 
-input {
-  display: inline-block;
-  margin: 10px auto;
-  border: 2px solid #032149;
-  padding: 10px 20px;
-  font-family: Verdana, Arial, sans-serif;
-  font-size: 14px;
-}
-
+    input {
+      display: inline-block;
+      margin: 10px auto;
+      border: 2px solid #032149;
+      padding: 10px 20px;
+      font-family: Verdana, Arial, sans-serif;
+      font-size: 14px;
+    }
   </style>
 
 </head>
 
 
 <body>
-   <div class="container" style="margin: auto">
-        <h2 class="title">Генератор паролей через хеш-таблицу</h2>
-        <br>
-        <h4>Вставте в поле ссылку, и генератор зашифрует её через алгоритм хеширования.</h4>
-        <input id="website" type="text" placeholder="Вставьте адрес сайта, где вам нужен пароль" size="50">
-        <br>
-        <!-- <h4>опционально. впишите уникальное слово ассоциирующееся с чем-то, кем-то или сайтом для которого нужен пароль.</h4> -->
-        <input type="text" id="word" size="50" placeholder="Напишите кодовое слово, чтобы сделать пароль сильнее">
+  <div class="container" style="margin: auto">
+    <h2 class="title">Генератор паролей через хеш-таблицу</h2>
+    <br>
+    <h4>Вставте в поле ссылку, и генератор зашифрует её через алгоритм хеширования.</h4>
+    <input id="website" type="text" placeholder="Вставьте адрес сайта, где вам нужен пароль" size="50">
+    <br>
+    <!-- <h4>опционально. впишите уникальное слово ассоциирующееся с чем-то, кем-то или сайтом для которого нужен пароль.</h4> -->
+    <input type="text" id="word" size="50" placeholder="Напишите кодовое слово, чтобы сделать пароль сильнее">
 
-        <br>
-        <!-- <h4>опционально. впишите фразу что бы усилить пароль от ссылки+слова.</h4> -->
-        <input type="text" id="phrase" size="50" placeholder="Напишите фразу, чтобы сделать пароль ещё сильнее">
-        <br>
-        <input id="slice" type="checkbox"> Добавить разделители и обрезать до 9 символов.
-        <br>
-        <input id="spec" type="checkbox"> Добавить три спецсимвола.
-        <br>
-        
-        <button style="font-size: 100%; padding:5px 10px 10px 10px" onclick="generate()">Создать пароль</button>
+    <br>
+    <!-- <h4>опционально. впишите фразу что бы усилить пароль от ссылки+слова.</h4> -->
+    <input type="text" id="phrase" size="50" placeholder="Напишите фразу, чтобы сделать пароль ещё сильнее">
+    <br>
+    <input id="slice" type="checkbox"> Добавить разделители и обрезать до 9 символов.
+    <br>
+    <input id="spec" type="checkbox"> Добавить три спецсимвола.
+    <br>
 
-        <p>Ваш пароль:</p> <div id="pass" style="font-weight: bold"></div>
-    </div>
+    <button style="font-size: 100%; padding:5px 10px 10px 10px" onclick="generate()">Создать пароль</button>
+
+    <p>Ваш пароль:</p>
+    <div id="pass" style="font-weight: bold"></div>
+
+    <hr>
+    <label for="more">прогнать уже зашифрованный пароль по хеш-таблице </label>
+    <select id="more" name="more">
+
+      <option value="one">1 раз</option>
+      <option value="two">2 раза</option>
+      <option value="three">3 раза</option>
+      <!-- <option value="four" >4 раза</option>
+      <option value="five">5 раз</option> -->
+      <option value="none" selected>0 раз</option>
+    </select>
+    <button id="again" >прогнать</button>
+    <p>Ваш пароль:</p>
+    <div id="newpass" style="font-weight: bold"></div>
+  </div>
 
 
 
 
   <script>
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
-}
-
-
-let site, salt, phrases;
-let text, password;
-
-let speacialSymbols = [ '$', '%', '&', "*", '№'];
-function getThreeSymbol() {
-  let strSymbol =
-   speacialSymbols[`${getRandomInt(1, 5)}`] +
-   speacialSymbols[`${getRandomInt(1, 5)}`] +
-   speacialSymbols[`${getRandomInt(1, 5)}`];
-   return strSymbol;
-}
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+    }
 
 
-function generate() {
-  site = document.getElementById('website').value;
-  salt = document.getElementById('word').value;
-  phrases = document.getElementById('phrase').value;
+    let site, salt, phrases;
+    let text, password;
+
+    let more;
+
+    let speacialSymbols = ['$', '%', '&', "*", '№'];
+
+    function getThreeSymbol() {
+      let strSymbol =
+        speacialSymbols[`${getRandomInt(1, 5)}`] +
+        speacialSymbols[`${getRandomInt(1, 5)}`] +
+        speacialSymbols[`${getRandomInt(1, 5)}`];
+      return strSymbol;
+    }
 
 
- 
-
-  
-  text = site + salt + phrases;
-
-
-  password = md5(text);
+    function generate() {
+      site = document.getElementById('website').value;
+      salt = document.getElementById('word').value;
+      phrases = document.getElementById('phrase').value;
 
 
-  let slicePass = document.getElementById('slice'),
+
+
+
+      text = site + salt + phrases;
+
+
+      password = md5(text);
+
+
+      let slicePass = document.getElementById('slice'),
         symbol = document.getElementById('spec');
 
-//   if (slicePass.checked) {
-//     let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
-//     document.getElementById('pass').innerHTML = str;
-// } else {
-//   console.log('err');
-//   document.getElementById('pass').innerHTML = password;
-// }
-
-if (symbol.checked ) { 
-  let str = password.match(/.{1,3}/g).join('-').slice(0, 8);
-  document.getElementById('pass').innerHTML = str + getThreeSymbol();
-} else if (slicePass.checked ) {
-  let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
-  document.getElementById('pass').innerHTML = str;
-}
- else {
-  console.log('error');
-  document.getElementById('pass').innerHTML = password;
-}
-
-// if (slicePass.checked ) { 
-//   let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
-//   document.getElementById('pass').innerHTML = str;
-// } else {
-//   console.log('error');
-//   document.getElementById('pass').innerHTML = password;
-// }
 
 
-}
+      if (symbol.checked) {
+        let str = password.match(/.{1,3}/g).join('-').slice(0, 8);
+        document.getElementById('pass').innerHTML = str + getThreeSymbol();
+      } else if (slicePass.checked) {
+        let str = password.match(/.{1,3}/g).join('-').slice(0, 11);
+        document.getElementById('pass').innerHTML = str;
+      } else {
+        console.log('error');
+        document.getElementById('pass').innerHTML = password;
+      }
+
+
+
+
+
+      let newPassResult = document.getElementById('newpass');
+      let mores = document.getElementById('more');
+      let againButton = document.getElementById('again');
+        // optionlist = more.options.value;
+      console.log(mores.options[0]);
+
+      let newPassZero,
+          newPassOne,
+          newPassTwo,
+          newPassThree,
+          newPassFour;
+
+againButton.addEventListener('click', () => {
+  checkAgain()
+});
+
+
+    function checkAgain() {
+
+      if (mores.options[0].selected) {
+        newPassZero = md5(password);
+        newPassResult.innerHTML = newPassZero;
+      } else if (mores.options[1].selected) {
+        newPassZero = md5(password);
+        newPassOne = md5(newPassZero);
+        newPassResult.innerHTML = newPassOne;
+      } else if (mores.options[2].selected) {
+        newPassZero = md5(password);
+        newPassOne = md5(newPassZero);
+        newPassTwo = md5(newPassOne);
+        newPassResult.innerHTML = newPassTwo;
+      }
+      // } else if (mores.options[3].selected) {
+      //   newPassZero = md5(password);
+      //   newPassOne = md5(newPassZero);
+      //   newPassTwo = md5(newPassOne);
+      //   newPassThree = md5(newPassTwo);
+      //   newPassResult.innerHTML = newPassThree;
+      // } else if (mores.options[4].selected) {
+      //   newPassZero = md5(password);
+      //   newPassOne = md5(newPassZero);
+      //   newPassTwo = md5(newPassOne);
+      //   newPassThree = md5(newPassTwo);
+      //   newPassFour - md5(newPassThree);
+      //   newPassResult.innerHTML = newPassFour;
+      // }
+    }
+
+
+
+    }
+
+    
+
+  
   </script>
 
 
 
 </body>
+
 </html>
